@@ -261,7 +261,14 @@ const HomePage = ({ onRoomClick }) => {
           <h1 className="text-5xl font-bold mb-4">Saleha Apartment</h1>
           <div className="flex items-center justify-center gap-2 text-xl mb-6">
             <MapPin size={24} />
-            <p>Katahbari, Nizarapar Path, House No-91, Guwahati-35</p>
+            <a 
+              href="https://maps.app.goo.gl/gXozZJ8Fg7GzBAgV8" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="hover:underline hover:text-green-300 transition"
+            >
+              Katahbari, Nizarapar Path, House No-91, Guwahati-35
+            </a>
           </div>
           <p className="text-xl opacity-90 max-w-2xl mx-auto">
             Comfortable rooms with modern amenities in a prime location
