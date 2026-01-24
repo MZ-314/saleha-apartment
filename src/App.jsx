@@ -303,13 +303,25 @@ const HomePage = ({ onRoomClick }) => {
       {/* Footer */}
       <div className="bg-gray-800 text-white py-8 mt-16">
         <div className="max-w-6xl mx-auto px-4 text-center">
-          <p className="text-lg mb-2">Contact us for bookings and inquiries</p>
-          <a 
-            href={`https://wa.me/${WHATSAPP_NUMBER}`}
-            className="text-green-400 hover:text-green-300 text-xl font-semibold"
-          >
-            +91 93652 23052
-          </a>
+          <p className="text-lg mb-4">Contact us for bookings and inquiries</p>
+          <div className="flex items-center justify-center gap-4">
+            <a 
+              href={`https://wa.me/${WHATSAPP_NUMBER}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-lg transition transform hover:scale-105"
+            >
+              <Phone size={20} />
+              WhatsApp
+            </a>
+            <a 
+              href={`tel:${WHATSAPP_NUMBER}`}
+              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition transform hover:scale-105"
+            >
+              <Phone size={20} />
+              Call
+            </a>
+          </div>
         </div>
       </div>
     </div>
