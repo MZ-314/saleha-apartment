@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useNavigate, useParams } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, Home, MapPin, Wifi, WifiOff, Phone, ArrowLeft } from 'lucide-react';
 
@@ -22,6 +22,61 @@ const ROOMS_DATA = [
 ];
 
 const WHATSAPP_NUMBER = '+919365223052';
+
+// Hero background image URL - Replace this with your Cloudinary URL
+const HERO_IMAGE_URL = 'https://placehold.co/1920x600/7C3030/ffffff?text=Upload+Your+Apartment+Photo+Here';
+
+// Taglines that will rotate with typing animation
+const TAGLINES = [
+  "Comfortable rooms with modern amenities in a prime location",
+  "In the heart of where you want to be",
+  "Find your perfect fit",
+  "Settle in with us"
+];
+
+const TypingTagline = () => {
+  const [taglineIndex, setTaglineIndex] = useState(0);
+  const [displayText, setDisplayText] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [charIndex, setCharIndex] = useState(0);
+
+  useEffect(() => {
+    const currentTagline = TAGLINES[taglineIndex];
+    const typingSpeed = isDeleting ? 30 : 50; // Faster typing
+
+    const timeout = setTimeout(() => {
+      if (!isDeleting) {
+        // Typing forward
+        if (charIndex < currentTagline.length) {
+          setDisplayText(currentTagline.substring(0, charIndex + 1));
+          setCharIndex(charIndex + 1);
+        } else {
+          // Finished typing, wait then start deleting
+          setTimeout(() => setIsDeleting(true), 4000); // Wait 4 seconds
+        }
+      } else {
+        // Deleting
+        if (charIndex > 0) {
+          setDisplayText(currentTagline.substring(0, charIndex - 1));
+          setCharIndex(charIndex - 1);
+        } else {
+          // Finished deleting, move to next tagline
+          setIsDeleting(false);
+          setTaglineIndex((taglineIndex + 1) % TAGLINES.length);
+        }
+      }
+    }, typingSpeed);
+
+    return () => clearTimeout(timeout);
+  }, [charIndex, isDeleting, taglineIndex]);
+
+  return (
+    <p className="text-xl opacity-90 max-w-2xl mx-auto h-16 flex items-center justify-center">
+      {displayText}
+      <span className="animate-pulse ml-1">|</span>
+    </p>
+  );
+};
 
 const StatusBadge = ({ status }) => {
   const configs = {
@@ -266,9 +321,20 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <div className="bg-red-900 text-white">
-        <div className="max-w-6xl mx-auto px-4 py-16 text-center">
+      {/* Hero Section with Background Image */}
+      <div 
+        className="relative bg-red-900 text-yellow-400 overflow-hidden"
+        style={{
+          backgroundImage: `url(${HERO_IMAGE_URL})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
+        {/* Maroon overlay */}
+        <div className="absolute inset-0 bg-red-900 opacity-75"></div>
+        
+        {/* Content */}
+        <div className="relative max-w-6xl mx-auto px-4 py-16 text-center">
           <h1 className="text-5xl font-bold mb-4">Saleha Apartment</h1>
           <div className="flex items-center justify-center gap-2 text-xl mb-6">
             <MapPin size={24} />
@@ -281,9 +347,7 @@ const HomePage = () => {
               Katahbari, Nizarapar Path, House No-91, Guwahati-35
             </a>
           </div>
-          <p className="text-xl opacity-90 max-w-2xl mx-auto">
-            Comfortable rooms with modern amenities in a prime location
-          </p>
+          <TypingTagline />
         </div>
       </div>
 
