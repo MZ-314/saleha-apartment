@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { BrowserRouter, Routes, Route, useNavigate, useParams } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, Home, MapPin, Wifi, WifiOff, Phone, ArrowLeft } from 'lucide-react';
 
 // ROOM DATA - Edit prices and status here (v=vacant, o=occupied, sv=soon vacant)
@@ -38,10 +39,12 @@ const StatusBadge = ({ status }) => {
   );
 };
 
-const RoomCard = ({ room, onClick }) => {
+const RoomCard = ({ room }) => {
+  const navigate = useNavigate();
+  
   return (
     <div 
-      onClick={onClick}
+      onClick={() => navigate(`/room/${room.id}`)}
       className="bg-white rounded-lg shadow-lg overflow-hidden cursor-pointer transform transition hover:scale-105 hover:shadow-xl"
     >
       <div className="relative h-48 overflow-hidden">
@@ -130,7 +133,15 @@ const PhotoGallery = ({ photos }) => {
   );
 };
 
-const RoomDetailPage = ({ room, onBack }) => {
+const RoomDetailPage = () => {
+  const { roomId } = useParams();
+  const navigate = useNavigate();
+  const room = ROOMS_DATA.find(r => r.id === roomId);
+
+  if (!room) {
+    return <div>Room not found</div>;
+  }
+
   const openWhatsApp = () => {
     const message = encodeURIComponent(`Hey, I want to book the room ${room.id}`);
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank');
@@ -141,7 +152,7 @@ const RoomDetailPage = ({ room, onBack }) => {
       <div className="bg-gradient-to-r from-red-900 to-green-800 text-white py-6">
         <div className="max-w-6xl mx-auto px-4">
           <button 
-            onClick={onBack}
+            onClick={() => navigate('/')}
             className="flex items-center gap-2 mb-4 hover:underline"
           >
             <ArrowLeft size={20} /> Back to All Rooms
@@ -249,7 +260,7 @@ const RoomDetailPage = ({ room, onBack }) => {
   );
 };
 
-const HomePage = ({ onRoomClick }) => {
+const HomePage = () => {
   const groundFloorRooms = ROOMS_DATA.filter(r => r.floor === 'ground');
   const secondFloorRooms = ROOMS_DATA.filter(r => r.floor === 'second');
 
@@ -284,7 +295,7 @@ const HomePage = ({ onRoomClick }) => {
         </div>
         <div className="grid md:grid-cols-3 gap-6 mb-16">
           {groundFloorRooms.map(room => (
-            <RoomCard key={room.id} room={room} onClick={() => onRoomClick(room)} />
+            <RoomCard key={room.id} room={room} />
           ))}
         </div>
 
@@ -295,7 +306,7 @@ const HomePage = ({ onRoomClick }) => {
         </div>
         <div className="grid md:grid-cols-3 gap-6">
           {secondFloorRooms.map(room => (
-            <RoomCard key={room.id} room={room} onClick={() => onRoomClick(room)} />
+            <RoomCard key={room.id} room={room} />
           ))}
         </div>
       </div>
@@ -329,11 +340,12 @@ const HomePage = ({ onRoomClick }) => {
 };
 
 export default function App() {
-  const [selectedRoom, setSelectedRoom] = useState(null);
-
-  return selectedRoom ? (
-    <RoomDetailPage room={selectedRoom} onBack={() => setSelectedRoom(null)} />
-  ) : (
-    <HomePage onRoomClick={setSelectedRoom} />
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/room/:roomId" element={<RoomDetailPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
