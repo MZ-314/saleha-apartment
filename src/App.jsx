@@ -24,14 +24,14 @@ const ROOMS_DATA = [
 const WHATSAPP_NUMBER = '+919365223052';
 
 // Hero background image URL - Replace this with your Cloudinary URL
-const HERO_IMAGE_URL = 'https://placehold.co/1920x600/7C3030/ffffff?text=Upload+Your+Apartment+Photo+Here';
+const HERO_IMAGE_URL = 'https://res.cloudinary.com/dsnjmkotw/image/upload/v1769305240/heroimage_jnt59v.jpg';
 
 // Taglines that will rotate with typing animation
 const TAGLINES = [
-  "Comfortable rooms with modern amenities in a prime location",
-  "In the heart of where you want to be",
-  "Find your perfect fit",
-  "Settle in with us"
+  "Comfortable rooms with modern amenities in a prime location.",
+  "In the heart of where you want to be.",
+  "Find your perfect fit.",
+  "Settle in with us."
 ];
 
 const TypingTagline = () => {
