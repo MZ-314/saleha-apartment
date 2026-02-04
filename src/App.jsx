@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useNavigate, useParams } from 'react-router-dom';
-import { ChevronLeft, ChevronRight, Home, MapPin, Wifi, WifiOff, Phone, ArrowLeft } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Home, MapPin, Wifi, WifiOff, Phone, ArrowLeft, X } from 'lucide-react';
+import { useSwipeable } from 'react-swipeable';
 
 // ROOM DATA - Edit prices and status here (v=vacant, o=occupied, sv=soon vacant)
 const ROOMS_DATA = [
@@ -22,11 +23,8 @@ const ROOMS_DATA = [
 ];
 
 const WHATSAPP_NUMBER = '+919365223052';
-
-// Hero background image URL - Replace this with your Cloudinary URL
 const HERO_IMAGE_URL = 'https://res.cloudinary.com/dsnjmkotw/image/upload/v1769305240/heroimage_jnt59v.jpg';
 
-// Taglines that will rotate with typing animation
 const TAGLINES = [
   "Comfortable rooms with modern amenities in a prime location.",
   "In the heart of where you want to be.",
@@ -42,25 +40,21 @@ const TypingTagline = () => {
 
   useEffect(() => {
     const currentTagline = TAGLINES[taglineIndex];
-    const typingSpeed = isDeleting ? 30 : 50; // Faster typing
+    const typingSpeed = isDeleting ? 30 : 50;
 
     const timeout = setTimeout(() => {
       if (!isDeleting) {
-        // Typing forward
         if (charIndex < currentTagline.length) {
           setDisplayText(currentTagline.substring(0, charIndex + 1));
           setCharIndex(charIndex + 1);
         } else {
-          // Finished typing, wait then start deleting
-          setTimeout(() => setIsDeleting(true), 4000); // Wait 4 seconds
+          setTimeout(() => setIsDeleting(true), 4000);
         }
       } else {
-        // Deleting
         if (charIndex > 0) {
           setDisplayText(currentTagline.substring(0, charIndex - 1));
           setCharIndex(charIndex - 1);
         } else {
-          // Finished deleting, move to next tagline
           setIsDeleting(false);
           setTaglineIndex((taglineIndex + 1) % TAGLINES.length);
         }
@@ -129,8 +123,119 @@ const RoomCard = ({ room }) => {
   );
 };
 
+const Lightbox = ({ photos, initialIndex, onClose }) => {
+  const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  const [slideDirection, setSlideDirection] = useState('');
+
+  const goToPrevious = () => {
+    setSlideDirection('left');
+    setTimeout(() => {
+      setCurrentIndex((prev) => (prev === 0 ? photos.length - 1 : prev - 1));
+      setSlideDirection('');
+    }, 150);
+  };
+
+  const goToNext = () => {
+    setSlideDirection('right');
+    setTimeout(() => {
+      setCurrentIndex((prev) => (prev === photos.length - 1 ? 0 : prev + 1));
+      setSlideDirection('');
+    }, 150);
+  };
+
+  const handlers = useSwipeable({
+    onSwipedLeft: () => goToNext(),
+    onSwipedRight: () => goToPrevious(),
+    trackMouse: false
+  });
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowLeft') goToPrevious();
+      if (e.key === 'ArrowRight') goToNext();
+      if (e.key === 'Escape') onClose();
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    document.body.style.overflow = 'hidden';
+    
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'unset';
+    };
+  }, [currentIndex]);
+
+  return (
+    <div 
+      className="fixed inset-0 bg-black bg-opacity-95 z-50 flex items-center justify-center p-4"
+      onClick={onClose}
+    >
+      <button
+        onClick={onClose}
+        className="absolute top-4 right-4 text-white hover:text-gray-300 z-50"
+      >
+        <X size={32} />
+      </button>
+
+      <div 
+        className="relative w-full h-full flex flex-col items-center justify-center"
+        onClick={(e) => e.stopPropagation()}
+        {...handlers}
+      >
+        <div className="relative flex-1 flex items-center justify-center w-full max-w-6xl">
+          <img
+            src={photos[currentIndex]}
+            alt={`Photo ${currentIndex + 1}`}
+            className={`max-h-[70vh] max-w-full object-contain transition-all duration-150 ${
+              slideDirection === 'left' ? 'translate-x-full opacity-0' :
+              slideDirection === 'right' ? '-translate-x-full opacity-0' :
+              'translate-x-0 opacity-100'
+            }`}
+          />
+
+          {photos.length > 1 && (
+            <>
+              <button
+                onClick={goToPrevious}
+                className="absolute left-4 bg-white/20 hover:bg-white/40 text-white p-3 rounded-full transition"
+              >
+                <ChevronLeft size={32} />
+              </button>
+              <button
+                onClick={goToNext}
+                className="absolute right-4 bg-white/20 hover:bg-white/40 text-white p-3 rounded-full transition"
+              >
+                <ChevronRight size={32} />
+              </button>
+            </>
+          )}
+
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-black/60 px-4 py-2 rounded-full text-white">
+            {currentIndex + 1} / {photos.length}
+          </div>
+        </div>
+
+        <div className="flex gap-2 mt-4 overflow-x-auto max-w-full px-4">
+          {photos.map((photo, idx) => (
+            <img
+              key={idx}
+              src={photo}
+              alt={`Thumbnail ${idx + 1}`}
+              onClick={() => setCurrentIndex(idx)}
+              className={`w-16 h-16 md:w-20 md:h-20 object-cover rounded cursor-pointer transition ${
+                idx === currentIndex ? 'ring-4 ring-green-500' : 'opacity-50 hover:opacity-100'
+              }`}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const PhotoGallery = ({ photos }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
   const goToPrevious = () => {
     setCurrentIndex((prev) => (prev === 0 ? photos.length - 1 : prev - 1));
@@ -140,51 +245,71 @@ const PhotoGallery = ({ photos }) => {
     setCurrentIndex((prev) => (prev === photos.length - 1 ? 0 : prev + 1));
   };
 
+  const handlers = useSwipeable({
+    onSwipedLeft: () => goToNext(),
+    onSwipedRight: () => goToPrevious(),
+    trackMouse: false
+  });
+
   return (
-    <div className="relative">
-      <div className="relative h-96 bg-gray-200 rounded-lg overflow-hidden">
-        <img 
-          src={photos[currentIndex]} 
-          alt={`Photo ${currentIndex + 1}`}
-          className="w-full h-full object-cover"
-        />
-        
-        {photos.length > 1 && (
-          <>
-            <button 
-              onClick={goToPrevious}
-              className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition"
-            >
-              <ChevronLeft size={24} />
-            </button>
-            <button 
-              onClick={goToNext}
-              className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition"
-            >
-              <ChevronRight size={24} />
-            </button>
-            
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-black/50 px-3 py-1 rounded-full text-white text-sm">
-              {currentIndex + 1} / {photos.length}
-            </div>
-          </>
-        )}
-      </div>
-      
-      <div className="flex gap-2 mt-3 overflow-x-auto">
-        {photos.map((photo, idx) => (
+    <>
+      <div className="relative">
+        <div 
+          className="relative h-96 bg-gray-200 rounded-lg overflow-hidden cursor-pointer"
+          {...handlers}
+          onClick={() => setLightboxOpen(true)}
+        >
           <img 
-            key={idx}
-            src={photo}
-            alt={`Thumbnail ${idx + 1}`}
-            onClick={() => setCurrentIndex(idx)}
-            className={`w-20 h-20 object-cover rounded cursor-pointer transition ${
-              idx === currentIndex ? 'ring-4 ring-green-600' : 'opacity-60 hover:opacity-100'
-            }`}
+            src={photos[currentIndex]} 
+            alt={`Photo ${currentIndex + 1}`}
+            className="w-full h-full object-cover"
           />
-        ))}
+          
+          {photos.length > 1 && (
+            <>
+              <button 
+                onClick={(e) => { e.stopPropagation(); goToPrevious(); }}
+                className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition"
+              >
+                <ChevronLeft size={24} />
+              </button>
+              <button 
+                onClick={(e) => { e.stopPropagation(); goToNext(); }}
+                className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition"
+              >
+                <ChevronRight size={24} />
+              </button>
+              
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-black/50 px-3 py-1 rounded-full text-white text-sm">
+                {currentIndex + 1} / {photos.length}
+              </div>
+            </>
+          )}
+        </div>
+        
+        <div className="flex gap-2 mt-3 overflow-x-auto">
+          {photos.map((photo, idx) => (
+            <img 
+              key={idx}
+              src={photo}
+              alt={`Thumbnail ${idx + 1}`}
+              onClick={() => { setCurrentIndex(idx); setLightboxOpen(true); }}
+              className={`w-20 h-20 object-cover rounded cursor-pointer transition ${
+                idx === currentIndex ? 'ring-4 ring-green-600' : 'opacity-60 hover:opacity-100'
+              }`}
+            />
+          ))}
+        </div>
       </div>
-    </div>
+
+      {lightboxOpen && (
+        <Lightbox
+          photos={photos}
+          initialIndex={currentIndex}
+          onClose={() => setLightboxOpen(false)}
+        />
+      )}
+    </>
   );
 };
 
@@ -321,7 +446,6 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section with Background Image */}
       <div 
         className="relative bg-red-900 text-yellow-400 overflow-hidden"
         style={{
@@ -330,10 +454,8 @@ const HomePage = () => {
           backgroundPosition: 'center',
         }}
       >
-        {/* Maroon overlay */}
         <div className="absolute inset-0 bg-red-900 opacity-75"></div>
         
-        {/* Content */}
         <div className="relative max-w-6xl mx-auto px-4 py-16 text-center">
           <h1 className="text-5xl font-bold mb-4">Saleha Apartment</h1>
           <div className="flex items-center justify-center gap-2 text-xl mb-6">
@@ -351,7 +473,6 @@ const HomePage = () => {
         </div>
       </div>
 
-      {/* Ground Floor Section */}
       <div className="max-w-6xl mx-auto px-4 py-12">
         <div className="mb-8">
           <h2 className="text-3xl font-bold text-gray-800 mb-2 border-l-8 border-red-900 pl-4">Ground Floor Rooms</h2>
@@ -363,7 +484,6 @@ const HomePage = () => {
           ))}
         </div>
 
-        {/* Second Floor Section */}
         <div className="mb-8">
           <h2 className="text-3xl font-bold text-gray-800 mb-2 border-l-8 border-green-800 pl-4">Second Floor Rooms</h2>
           <p className="text-gray-600 pl-4">7 rooms available with WiFi on the second floor</p>
@@ -375,7 +495,6 @@ const HomePage = () => {
         </div>
       </div>
 
-      {/* Footer */}
       <div className="bg-gray-800 text-white py-8 mt-16">
         <div className="max-w-6xl mx-auto px-4 text-center">
           <p className="text-lg mb-4">Contact us for bookings and inquiries</p>
