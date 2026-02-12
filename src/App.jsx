@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, useNavigate, useParams } from 'react-router-dom';
-import { ChevronLeft, ChevronRight, Home, MapPin, Wifi, WifiOff, Phone, ArrowLeft, X } from 'lucide-react';
+import { BrowserRouter, Routes, Route, useNavigate, useParams, useLocation } from 'react-router-dom';
+import { ChevronLeft, ChevronRight, Home, MapPin, Wifi, WifiOff, Phone, ArrowLeft, X, Camera, Shield, Car, Clock } from 'lucide-react';
 import { useSwipeable } from 'react-swipeable';
 
 // ROOM DATA - Edit prices and status here (v=vacant, o=occupied, sv=soon vacant)
@@ -24,6 +24,14 @@ const ROOMS_DATA = [
 
 const WHATSAPP_NUMBER = '+919365223052';
 const HERO_IMAGE_URL = 'https://res.cloudinary.com/dsnjmkotw/image/upload/v1769305240/heroimage_jnt59v.jpg';
+
+// Apartment photos for About section
+const APARTMENT_PHOTOS = [
+  'https://placehold.co/800x600/7C3030/white?text=Building+Exterior',
+  'https://placehold.co/800x600/2D5016/white?text=Parking+Area',
+  'https://placehold.co/800x600/7C3030/white?text=CCTV+Security',
+  'https://placehold.co/800x600/2D5016/white?text=Common+Area',
+];
 
 const TAGLINES = [
   "Comfortable rooms with modern amenities in a prime location.",
@@ -335,7 +343,7 @@ const RoomDetailPage = () => {
             onClick={() => navigate('/')}
             className="flex items-center gap-2 mb-4 hover:underline"
           >
-            <ArrowLeft size={20} /> Back to All Rooms
+            <ArrowLeft size={20} /> Back to Homepage
           </button>
           <h1 className="text-4xl font-bold">Room {room.id}</h1>
         </div>
@@ -390,15 +398,15 @@ const RoomDetailPage = () => {
                       <Wifi className="text-green-600" size={24} />
                       <div>
                         <p className="font-semibold">WiFi Available</p>
-                        <p className="text-sm text-gray-600">High-speed internet included</p>
+                        <p className="text-sm text-gray-600">₹50/person/month</p>
                       </div>
                     </>
                   ) : (
                     <>
                       <WifiOff className="text-gray-400" size={24} />
                       <div>
-                        <p className="font-semibold">WiFi Not Included</p>
-                        <p className="text-sm text-gray-600">Can be arranged separately</p>
+                        <p className="font-semibold">WiFi Coming Soon</p>
+                        <p className="text-sm text-gray-600">Available for 2nd floor currently</p>
                       </div>
                     </>
                   )}
@@ -430,7 +438,7 @@ const RoomDetailPage = () => {
               )}
 
               <p className="text-sm text-gray-500 text-center mt-4">
-                Unfurnished room ready for move-in
+                Unfurnished room • Tiled-floor bathroom
               </p>
             </div>
           </div>
@@ -441,11 +449,20 @@ const RoomDetailPage = () => {
 };
 
 const HomePage = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+const activeTab = location.hash === '#rooms' ? 'rooms' : 'about';
+
+const switchTab = (tab) => {
+  navigate(tab === 'rooms' ? '#rooms' : '/');
+};
+
   const groundFloorRooms = ROOMS_DATA.filter(r => r.floor === 'ground');
   const secondFloorRooms = ROOMS_DATA.filter(r => r.floor === 'second');
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Hero Section */}
       <div 
         className="relative bg-red-900 text-yellow-400 overflow-hidden"
         style={{
@@ -473,28 +490,128 @@ const HomePage = () => {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 py-12">
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-800 mb-2 border-l-8 border-red-900 pl-4">Ground Floor Rooms</h2>
-          <p className="text-gray-600 pl-4">5 rooms available on the ground floor</p>
-        </div>
-        <div className="grid md:grid-cols-3 gap-6 mb-16">
-          {groundFloorRooms.map(room => (
-            <RoomCard key={room.id} room={room} />
-          ))}
-        </div>
-
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-800 mb-2 border-l-8 border-green-800 pl-4">Second Floor Rooms</h2>
-          <p className="text-gray-600 pl-4">7 rooms available with WiFi on the second floor</p>
-        </div>
-        <div className="grid md:grid-cols-3 gap-6">
-          {secondFloorRooms.map(room => (
-            <RoomCard key={room.id} room={room} />
-          ))}
+      {/* Sticky Tab Navigation */}
+      <div className="sticky top-0 z-40 bg-white shadow-md">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="flex gap-1">
+            <button
+              onClick={() => switchTab('about')}
+              className={`flex-1 py-4 font-semibold text-lg transition ${
+                activeTab === 'about'
+                  ? 'text-green-700 border-b-4 border-green-700'
+                  : 'text-gray-600 hover:text-gray-800 border-b-4 border-transparent'
+              }`}
+            >
+              About Us
+            </button>
+            <button
+              onClick={() => switchTab('rooms')}
+              className={`flex-1 py-4 font-semibold text-lg transition ${
+                activeTab === 'rooms'
+                  ? 'text-green-700 border-b-4 border-green-700'
+                  : 'text-gray-600 hover:text-gray-800 border-b-4 border-transparent'
+              }`}
+            >
+              Rooms
+            </button>
+          </div>
         </div>
       </div>
 
+      {/* Tab Content */}
+      {activeTab === 'about' && (
+        <div className="max-w-6xl mx-auto px-4 py-12">
+          {/* About Section */}
+          <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
+            <h2 className="text-3xl font-bold text-gray-800 mb-6 border-l-8 border-red-900 pl-4">About Saleha Apartment</h2>
+            
+            <div className="prose max-w-none text-gray-700 space-y-4 mb-8">
+              <p className="text-lg leading-relaxed">
+                Saleha Apartment, newly renovated in 2021, is at a prime location and close to several offices and institutes. With affordable pricing and tiled-floor bathroom-attached rooms, it remains the preferred choice of several RGU students and several employees of offices in and around Garchuk.
+              </p>
+              
+              <p className="text-lg leading-relaxed">
+                The rent mentioned with the rooms covers water bill and garbage bill along with the rent. The electricity bill will be charged separately according to the usage reflected on the meters. Tenants in the second floor can opt for wi-fi and the bill for wi-fi will depend on the number of people in one room. If a room has 3 people, then the wi-fi bill per month for that room would 3X50=150/-. So in essence, we are charging only Rs 50/- per person for full unlimited internet per month.
+              </p>
+              
+              <p className="text-lg leading-relaxed">
+                The apartment provides free parking for two-wheelers to all its tenants. Tenants with four-wheelers can park right outside the apartment without any worries. Along with parking space, we also have CCTV cameras with 24 hour surveillance all around and in the apartment, promising full security to the tenants. We have already mentioned the wi-fi facility which we will also bring to the ground floor rooms in no time.
+              </p>
+              
+              <p className="text-lg leading-relaxed">
+                Our apartment has some major rules that the tenants need to follow. We need to clarify that the rooms are not completely independent. We make sure of who goes in and who goes out. We don't allow unmarried couples strictly. if a male student is seen to have brought a female companion which he is not married to, we will have to take strict action. Similarly, if a female student is seen to have brought a male companion which she is not married to, the same procedure follows. We want peaceful tenants that don't create a ruckus, keeps the room clean, and pays the rent on time. Before booking the room, make sure to prepare the right documents like Aadhar Card, student id (if applicable), employee id (if applicable), etc. The gate is closed every night at around 10:30 PM. We will appreciate that all the tenants are home by that time.
+              </p>
+            </div>
+
+            {/* Apartment Photos Gallery */}
+            <div className="grid md:grid-cols-2 gap-4 mb-8">
+              {APARTMENT_PHOTOS.map((photo, idx) => (
+                <img
+                  key={idx}
+                  src={photo}
+                  alt={`Apartment ${idx + 1}`}
+                  className="w-full h-64 object-cover rounded-lg shadow-md"
+                />
+              ))}
+            </div>
+
+            {/* Key Features */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="flex flex-col items-center text-center p-4 bg-gray-50 rounded-lg">
+                <Shield className="text-red-900 mb-3" size={40} />
+                <h3 className="font-bold text-lg mb-2">24/7 Security</h3>
+                <p className="text-sm text-gray-600">CCTV surveillance throughout</p>
+              </div>
+              
+              <div className="flex flex-col items-center text-center p-4 bg-gray-50 rounded-lg">
+                <Car className="text-green-700 mb-3" size={40} />
+                <h3 className="font-bold text-lg mb-2">Free Parking</h3>
+                <p className="text-sm text-gray-600">Two-wheeler parking for all tenants</p>
+              </div>
+              
+              <div className="flex flex-col items-center text-center p-4 bg-gray-50 rounded-lg">
+                <Wifi className="text-blue-600 mb-3" size={40} />
+                <h3 className="font-bold text-lg mb-2">WiFi Available</h3>
+                <p className="text-sm text-gray-600">₹50/person unlimited internet</p>
+              </div>
+              
+              <div className="flex flex-col items-center text-center p-4 bg-gray-50 rounded-lg">
+                <Clock className="text-purple-600 mb-3" size={40} />
+                <h3 className="font-bold text-lg mb-2">Prime Location</h3>
+                <p className="text-sm text-gray-600">Close to RGU & offices</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'rooms' && (
+        <div className="max-w-6xl mx-auto px-4 py-12">
+          {/* Ground Floor Section */}
+          <div className="mb-8">
+            <h2 className="text-3xl font-bold text-gray-800 mb-2 border-l-8 border-red-900 pl-4">Ground Floor Rooms</h2>
+            <p className="text-gray-600 pl-4">5 rooms available on the ground floor</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6 mb-16">
+            {groundFloorRooms.map(room => (
+              <RoomCard key={room.id} room={room} />
+            ))}
+          </div>
+
+          {/* Second Floor Section */}
+          <div className="mb-8">
+            <h2 className="text-3xl font-bold text-gray-800 mb-2 border-l-8 border-green-800 pl-4">Second Floor Rooms</h2>
+            <p className="text-gray-600 pl-4">7 rooms available with WiFi on the second floor</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {secondFloorRooms.map(room => (
+              <RoomCard key={room.id} room={room} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Footer */}
       <div className="bg-gray-800 text-white py-8 mt-16">
         <div className="max-w-6xl mx-auto px-4 text-center">
           <p className="text-lg mb-4">Contact us for bookings and inquiries</p>
