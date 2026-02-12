@@ -524,20 +524,25 @@ const switchTab = (tab) => {
           {/* About Section */}
           <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
             <h2 className="text-3xl font-bold text-gray-800 mb-6 border-l-8 border-red-900 pl-4">About Saleha Apartment</h2>
-            
             <div className="prose max-w-none text-gray-700 space-y-4 mb-8">
               <p className="text-lg leading-relaxed">
                 Saleha Apartment, newly renovated in 2021, is at a prime location and close to several offices and institutes. With affordable pricing and tiled-floor bathroom-attached rooms, it remains the preferred choice of several RGU students and several employees of offices in and around Garchuk.
               </p>
-              
+            </div>
+            <h2 className="text-3xl font-bold text-gray-800 mb-6 border-l-8 border-red-900 pl-4">Rent and other bills</h2>
+            <div className="prose max-w-none text-gray-700 space-y-4 mb-8">
               <p className="text-lg leading-relaxed">
                 The rent mentioned with the rooms covers water bill and garbage bill along with the rent. The electricity bill will be charged separately according to the usage reflected on the meters. Tenants in the second floor can opt for wi-fi and the bill for wi-fi will depend on the number of people in one room. If a room has 3 people, then the wi-fi bill per month for that room would 3X50=150/-. So in essence, we are charging only Rs 50/- per person for full unlimited internet per month.
               </p>
-              
+            </div>
+            <h2 className="text-3xl font-bold text-gray-800 mb-6 border-l-8 border-red-900 pl-4">Facilities provided</h2>
+            <div className="prose max-w-none text-gray-700 space-y-4 mb-8">
               <p className="text-lg leading-relaxed">
                 The apartment provides free parking for two-wheelers to all its tenants. Tenants with four-wheelers can park right outside the apartment without any worries. Along with parking space, we also have CCTV cameras with 24 hour surveillance all around and in the apartment, promising full security to the tenants. We have already mentioned the wi-fi facility which we will also bring to the ground floor rooms in no time.
               </p>
-              
+            </div>
+            <h2 className="text-3xl font-bold text-gray-800 mb-6 border-l-8 border-red-900 pl-4">Rules and Regulations</h2>
+            <div className="prose max-w-none text-gray-700 space-y-4 mb-8">
               <p className="text-lg leading-relaxed">
                 Our apartment has some major rules that the tenants need to follow. We need to clarify that the rooms are not completely independent. We make sure of who goes in and who goes out. We don't allow unmarried couples strictly. if a male student is seen to have brought a female companion which he is not married to, we will have to take strict action. Similarly, if a female student is seen to have brought a male companion which she is not married to, the same procedure follows. We want peaceful tenants that don't create a ruckus, keeps the room clean, and pays the rent on time. Before booking the room, make sure to prepare the right documents like Aadhar Card, student id (if applicable), employee id (if applicable), etc. The gate is closed every night at around 10:30 PM. We will appreciate that all the tenants are home by that time.
               </p>
