@@ -554,7 +554,7 @@ const switchTab = (tab) => {
             </div>
 
             {/* Apartment Photos Gallery */}
-            <div className="grid md:grid-cols-2 gap-4 mb-8">
+            <div className="grid md:grid-cols-1 gap-4 mb-8">
               {APARTMENT_PHOTOS.map((photo, idx) => (
                 <img
                   key={idx}
