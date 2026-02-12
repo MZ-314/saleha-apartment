@@ -560,7 +560,7 @@ const switchTab = (tab) => {
                   key={idx}
                   src={photo}
                   alt={`Apartment ${idx + 1}`}
-                  className="w-full h-64 object-cover rounded-lg shadow-md"
+                  className="w-full h-full object-cover rounded-lg shadow-md"
                 />
               ))}
             </div>
