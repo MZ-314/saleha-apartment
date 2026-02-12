@@ -488,7 +488,7 @@ const switchTab = (tab) => {
               rel="noopener noreferrer"
               className="hover:underline hover:text-green-300 transition"
             >
-              Katahbari, Nizarapar Path, House No-91, Guwahati-35
+              Katahbari, Nizarapar Path, House No-91, Guwahati-35 (Click to open in maps)
             </a>
           </div>
           <TypingTagline />
