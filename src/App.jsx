@@ -27,10 +27,15 @@ const HERO_IMAGE_URL = 'https://res.cloudinary.com/dsnjmkotw/image/upload/v17693
 
 // Apartment photos for About section
 const APARTMENT_PHOTOS = [
-  'https://placehold.co/800x600/7C3030/white?text=Building+Exterior',
-  'https://placehold.co/800x600/2D5016/white?text=Parking+Area',
-  'https://placehold.co/800x600/7C3030/white?text=CCTV+Security',
-  'https://placehold.co/800x600/2D5016/white?text=Common+Area',
+  'https://res.cloudinary.com/dsnjmkotw/image/upload/v1770883974/IMG_20260212_133640087_oujnjx.jpg',
+  'https://res.cloudinary.com/dsnjmkotw/image/upload/v1770883977/IMG_20260212_133902861_bwrqjw.jpg',
+  'https://res.cloudinary.com/dsnjmkotw/image/upload/v1770883969/IMG_20260212_133645036_bilagw.jpg',
+  'https://res.cloudinary.com/dsnjmkotw/image/upload/v1770883974/IMG_20260212_133554882_ylyh4p.jpg',
+  'https://res.cloudinary.com/dsnjmkotw/image/upload/v1770883973/IMG_20260212_133807731_p7vg7g.jpg',
+  'https://res.cloudinary.com/dsnjmkotw/image/upload/v1770883975/IMG_20260212_133813931_ya9pzg.jpg',
+  'https://res.cloudinary.com/dsnjmkotw/image/upload/v1770883976/IMG_20260212_133834418_wj9cge.jpg',
+  'https://res.cloudinary.com/dsnjmkotw/image/upload/v1770883972/IMG_20260212_133731586_tdkroi.jpg',
+  'https://res.cloudinary.com/dsnjmkotw/image/upload/v1770883969/IMG_20260212_133745992_vwmsn9.jpg'
 ];
 
 const TAGLINES = [
